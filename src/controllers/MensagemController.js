@@ -17,9 +17,21 @@ class MensagemController {
 
 // Método para listar todas as mensagens (READ)
 list(req, res) {
-    const listaMensagens = MensagemDAO.listar();
+    const listaMensagens = MensagemDAO.listar().map(mensagem => {
+        // Verificar se mensagem.dataHora é uma instância de Date antes de tentar formatá-la
+        const dataHoraFormatada = mensagem.dataHora instanceof Date ? mensagem.dataHora.toLocaleString() : null;
+        // Retornar a mensagem com a data e hora formatadas
+        return { 
+            id: mensagem.id, 
+            texto: mensagem.texto, 
+            remetente: mensagem.remetente, 
+            destinatario: mensagem.destinatario, 
+            dataHora: dataHoraFormatada 
+        };
+    });
     res.status(200).json({ mensagens: listaMensagens });
 }
+
 
 // Método para mostrar uma mensagem específica (READ)
 show(req, res) {
